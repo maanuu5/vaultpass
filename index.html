@@ -11,7 +11,22 @@
     <header class="app-header">
       <h1>Password Manager</h1>
     </header>
-    <main id="app-main"></main>
+    <main id="app-main">
+    <section class="card form-card">
+      <h2>Add New Credential</h2>
+      <form id="credential-form">
+        <div class="form-group">
+          <label for="website-input">Website</label>
+          <input type="text" id="website-input" placeholder="e.g. github.com" required>
+        </div>
+        <div class="form-group">
+          <label for="username-input">Username</label>
+          <input type="text" id="username-input" placeholder="e.g. user@example.com" required>
+        </div>
+        <button type="submit" id="save-btn">Save Credential</button>
+      </form>
+    </section>
+  </main>
   </div>
 </body>
 </html>
