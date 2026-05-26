@@ -32,3 +32,15 @@ function handleFormSubmit(e) {
   entries.push(newEntry);
   saveEntries(entries);
 }
+
+function renderList() {
+  const container = document.getElementById('credential-list');
+  if (!container) return;
+  container.innerHTML = entries.map(item => `
+    <div class="entry-item" data-id="${item.id}">
+      <span class="entry-site">${item.website}</span>
+      <span class="entry-user">${item.username}</span>
+      <span class="entry-pw" data-masked="true">••••••••</span>
+    </div>
+  `).join('');
+}
