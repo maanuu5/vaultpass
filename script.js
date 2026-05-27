@@ -44,3 +44,13 @@ function renderList() {
     </div>
   `).join('');
 }
+
+function toggleItemPasswordMask(id) {
+  const el = document.querySelector(`[data-id="${id}"] .entry-pw`);
+  if (!el) return;
+  const isMasked = el.getAttribute('data-masked') === 'true';
+  const entry = entries.find(e => e.id === id);
+  if (!entry) return;
+  el.textContent = isMasked ? entry.password : '••••••••';
+  el.setAttribute('data-masked', isMasked ? 'false' : 'true');
+}
