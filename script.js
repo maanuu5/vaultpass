@@ -54,3 +54,14 @@ function toggleItemPasswordMask(id) {
   el.textContent = isMasked ? entry.password : '••••••••';
   el.setAttribute('data-masked', isMasked ? 'false' : 'true');
 }
+
+function deleteEntryWithConfirm(id, buttonEl) {
+  if (buttonEl.dataset.confirming === 'true') {
+    entries = entries.filter(e => e.id !== id);
+    saveEntries(entries);
+    renderList();
+  } else {
+    buttonEl.dataset.confirming = 'true';
+    buttonEl.textContent = 'Confirm Delete?';
+  }
+}
