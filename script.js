@@ -65,3 +65,8 @@ function deleteEntryWithConfirm(id, buttonEl) {
     buttonEl.textContent = 'Confirm Delete?';
   }
 }
+
+function filterEntries(searchTerm) {
+  const term = searchTerm.toLowerCase();
+  return entries.filter(e => e.website.toLowerCase().includes(term) || e.username.toLowerCase().includes(term));
+}
