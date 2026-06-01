@@ -70,3 +70,16 @@ function filterEntries(searchTerm) {
   const term = searchTerm.toLowerCase();
   return entries.filter(e => e.website.toLowerCase().includes(term) || e.username.toLowerCase().includes(term));
 }
+
+async function copyToClipboard(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch (err) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  }
+}
