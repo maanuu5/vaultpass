@@ -83,3 +83,24 @@ async function copyToClipboard(text) {
     document.body.removeChild(ta);
   }
 }
+
+function generateRandomPassword(length, options) {
+  const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+  const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const numbers = '0123456789';
+  const symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+  let charset = '';
+  if (options.lowercase) charset += lowercase;
+  if (options.uppercase) charset += uppercase;
+  if (options.numbers) charset += numbers;
+  if (options.symbols) charset += symbols;
+  if (!charset) return '';
+
+  const values = new Uint32Array(length);
+  window.crypto.getRandomValues(values);
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += charset[values[i] % charset.length];
+  }
+  return result;
+}
