@@ -104,3 +104,16 @@ function generateRandomPassword(length, options) {
   }
   return result;
 }
+
+function calculatePasswordStrength(password) {
+  if (!password) return { score: 0, label: 'Empty' };
+  let score = 0;
+  if (password.length >= 8) score++;
+  if (password.length >= 14) score++;
+  if (/[A-Z]/.test(password) && /[a-z]/.test(password)) score++;
+  if (/[0-9]/.test(password)) score++;
+  if (/[^A-Za-z0-9]/.test(password)) score++;
+  if (score <= 2) return { score: 1, label: 'Weak' };
+  if (score <= 4) return { score: 2, label: 'Moderate' };
+  return { score: 3, label: 'Strong' };
+}
