@@ -117,3 +117,14 @@ function calculatePasswordStrength(password) {
   if (score <= 4) return { score: 2, label: 'Moderate' };
   return { score: 3, label: 'Strong' };
 }
+
+let editingEntryId = null;
+function startEditEntry(id) {
+  const entry = entries.find(e => e.id === id);
+  if (!entry) return;
+  editingEntryId = id;
+  document.getElementById('website-input').value = entry.website;
+  document.getElementById('username-input').value = entry.username;
+  document.getElementById('password-input').value = entry.password;
+  document.getElementById('save-btn').textContent = 'Update Credential';
+}
