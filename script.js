@@ -128,3 +128,7 @@ function startEditEntry(id) {
   document.getElementById('password-input').value = entry.password;
   document.getElementById('save-btn').textContent = 'Update Credential';
 }
+
+function isDuplicateEntry(website, username, excludeId) {
+  return entries.some(e => e.id !== excludeId && e.website.toLowerCase() === website.toLowerCase() && e.username.toLowerCase() === username.toLowerCase());
+}
