@@ -10,3 +10,15 @@ body {
   max-width: 900px;
   margin: 0 auto;
 }
+
+.bento-layout {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 16px;
+}
+.bento-card {
+  background: #0a0a0a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+}
