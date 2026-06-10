@@ -22,3 +22,9 @@ body {
   border-radius: 12px;
   padding: 20px;
 }
+
+@media (max-width: 768px) {
+  .bento-layout {
+    grid-template-columns: 1fr;
+  }
+}
