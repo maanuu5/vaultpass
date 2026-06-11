@@ -132,3 +132,14 @@ function startEditEntry(id) {
 function isDuplicateEntry(website, username, excludeId) {
   return entries.some(e => e.id !== excludeId && e.website.toLowerCase() === website.toLowerCase() && e.username.toLowerCase() === username.toLowerCase());
 }
+
+function extractDomain(url) {
+  try {
+    let clean = url.trim();
+    if (!/^https?:\/\//i.test(clean)) clean = 'https://' + clean;
+    const parsed = new URL(clean);
+    return parsed.hostname.replace(/^www\./, '');
+  } catch (e) {
+    return url.replace(/^(?:https?:\/\/)?(?:www\.)?/i, '').split('/')[0].split('?')[0];
+  }
+}
