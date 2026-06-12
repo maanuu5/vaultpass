@@ -143,3 +143,7 @@ function extractDomain(url) {
     return url.replace(/^(?:https?:\/\/)?(?:www\.)?/i, '').split('/')[0].split('?')[0];
   }
 }
+
+function getFaviconUrl(domain) {
+  return 'https://www.google.com/s2/favicons?domain=' + encodeURIComponent(domain) + '&sz=128';
+}
