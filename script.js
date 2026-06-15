@@ -147,3 +147,8 @@ function extractDomain(url) {
 function getFaviconUrl(domain) {
   return 'https://www.google.com/s2/favicons?domain=' + encodeURIComponent(domain) + '&sz=128';
 }
+
+function renderFallbackAvatar(text) {
+  const initial = (text || '?').charAt(0).toUpperCase();
+  return `<span class="avatar-fallback">${initial}</span>`;
+}
