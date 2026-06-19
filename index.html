@@ -62,7 +62,12 @@
       <button type="button" id="generate-btn">Generate Password</button>
     </section>
     <section class="card list-card">
-      <h2>Saved Credentials</h2>
+      <div class="filter-tabs">
+          <button type="button" class="filter-pill active" data-filter="all">All</button>
+          <button type="button" class="filter-pill" data-filter="strong">Strong</button>
+          <button type="button" class="filter-pill" data-filter="weak">Needs Review</button>
+        </div>
+        <h2>Saved Credentials</h2>
       <div class="search-bar">
         <input type="text" id="search-input" placeholder="Search logins...">
       </div>
