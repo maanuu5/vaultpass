@@ -152,3 +152,7 @@ function renderFallbackAvatar(text) {
   const initial = (text || '?').charAt(0).toUpperCase();
   return `<span class="avatar-fallback">${initial}</span>`;
 }
+
+function exportVaultBackup() {
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(entries, null, 2));
+}
