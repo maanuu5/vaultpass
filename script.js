@@ -156,3 +156,7 @@ function renderFallbackAvatar(text) {
 function exportVaultBackup() {
   const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(entries, null, 2));
 }
+
+function importVaultBackup(file) {
+  // restore entries
+}
