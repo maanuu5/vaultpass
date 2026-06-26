@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,87 +7,405 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- ===================================================================== -->
+  <!-- SCREEN 1: LOGIN / AUTHENTICATION SCREEN (COMPACT & SIMPLE)             -->
+  <!-- ===================================================================== -->
   <div id="login-screen" class="login-wrapper">
     <div class="login-card">
-      <h1 class="login-title">Password Manager</h1>
+      <div class="login-header">
+        <h1 class="login-title">Password Manager</h1>
+        <p class="login-subtitle">Sign in to access your saved passwords.</p>
+      </div>
+
+      <!-- Basic, Understated Demo Autofill Line -->
       <div class="demo-login-bar">
-        <span>Demo: admin / admin123</span>
-        <button type="button" id="autofill-btn">Autofill</button>
+        <span class="demo-bar-text">Demo: admin / admin123</span>
+        <button type="button" id="autofill-btn" class="autofill-link-btn">Autofill</button>
       </div>
-      <form id="login-form">
-        <input type="text" id="login-username" placeholder="Username">
-        <input type="password" id="login-password" placeholder="Password">
-        <button type="submit" id="login-submit-btn">Sign In</button>
+
+      <!-- Login Form -->
+      <form id="login-form" novalidate>
+        <div class="form-group">
+          <label for="login-username" class="form-label">Username</label>
+          <input
+            type="text"
+            id="login-username"
+            class="form-input"
+            placeholder="Username"
+            autocomplete="username"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="login-password" class="form-label">Password</label>
+          <div class="password-input-wrapper">
+            <input
+              type="password"
+              id="login-password"
+              class="form-input password-field"
+              placeholder="Password"
+              autocomplete="current-password"
+              required
+            >
+            <button
+              type="button"
+              id="toggle-login-password"
+              class="btn btn-icon-inside"
+              aria-pressed="false"
+              title="Toggle visibility"
+            >Show</button>
+          </div>
+        </div>
+
+        <div id="login-error" class="field-error" aria-live="polite"></div>
+
+        <button type="submit" id="login-submit-btn" class="btn btn-primary btn-full">
+          Sign In
+        </button>
       </form>
     </div>
   </div>
-  <div class="app-container">
-    <header class="app-header">
-      <h1>Password Manager</h1>
+
+  <!-- ===================================================================== -->
+  <!-- SCREEN 2: MAIN VAULT APPLICATION                                     -->
+  <!-- ===================================================================== -->
+  <div id="vault-screen" class="bento-wrapper" style="display: none;">
+    <!-- Clean Header -->
+    <header class="bento-header">
+      <div class="brand-group">
+        <div class="brand-icon-box" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-title-row">
+            <h1 class="app-title">Password Manager</h1>
+            <span class="vault-status-indicator">
+              <span class="status-dot"></span>
+              Unlocked
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Backup / Export Vault -->
+        <button type="button" id="export-vault-btn" class="btn btn-secondary btn-compact" title="Export vault backup as JSON">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span class="btn-text-desktop">Backup</span>
+        </button>
+
+        <!-- Import / Restore Vault -->
+        <label for="import-vault-file" class="btn btn-secondary btn-compact" title="Restore vault from JSON backup" style="margin: 0; cursor: pointer;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          <span class="btn-text-desktop">Restore</span>
+          <input type="file" id="import-vault-file" accept=".json" style="display: none;">
+        </label>
+
+        <!-- Lock Vault Button -->
+        <button type="button" id="lock-vault-btn" class="btn btn-secondary btn-compact" title="Lock session">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          <span class="btn-text-desktop">Lock</span>
+        </button>
+      </div>
     </header>
-    <main id="app-main">
-    <div class="metrics-row">
-      <div class="metric-card" id="metric-total">Total: 0</div>
-      <div class="metric-card" id="metric-strong">Strong: 0</div>
-      <div class="metric-card" id="metric-weak">Weak: 0</div>
-    </div>
-    <section class="card form-card">
-      <h2>Add New Credential</h2>
-      <form id="credential-form">
-        <div class="form-group">
-          <label for="website-input">Website</label>
-          <div class="site-input-box">
-            <span id="site-favicon-preview"></span>
-            <input type="text" id="website-input" placeholder="e.g. github.com" required>
+
+    <!-- Bento Grid Container -->
+    <main class="bento-grid">
+      <!-- Bento Item 1: Vault Metrics -->
+      <section class="bento-card bento-stats" aria-label="Vault Statistics">
+        <div class="stat-card">
+          <div class="stat-icon-wrapper stat-total-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+          </div>
+          <div class="stat-text-group">
+            <span class="stat-label">Total Logins</span>
+            <span id="stat-total" class="stat-value">0</span>
           </div>
         </div>
-        <div class="form-group">
-          <label for="username-input">Username</label>
-          <input type="text" id="username-input" placeholder="e.g. user@example.com" required>
-        </div>
-        <div class="form-group">
-          <label for="password-input">Password</label>
-          <div class="password-wrapper">
-            <input type="password" id="password-input" placeholder="Enter password" required>
-            <button type="button" id="toggle-pw-visibility">Show</button>
+
+        <div class="stat-divider"></div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrapper stat-strong-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <div class="stat-text-group">
+            <span class="stat-label">Strong</span>
+            <span id="stat-strong" class="stat-value text-strong">0</span>
           </div>
         </div>
-        <button type="submit" id="save-btn">Save Credential</button>
-      </form>
-    </section>
-    <section class="card generator-card">
-      <h2>Password Generator</h2>
-      <div class="slider-row">
-        <label for="length-slider">Length: <span id="length-val">16</span></label>
-        <div class="preset-buttons">
-          <button type="button" class="preset-btn" data-length="12">12</button>
-          <button type="button" class="preset-btn" data-length="16">16</button>
-          <button type="button" class="preset-btn" data-length="20">20</button>
-          <button type="button" class="preset-btn" data-length="24">24</button>
+
+        <div class="stat-divider"></div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrapper stat-medium-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+          </div>
+          <div class="stat-text-group">
+            <span class="stat-label">Moderate</span>
+            <span id="stat-medium" class="stat-value text-medium">0</span>
+          </div>
         </div>
-        <input type="range" id="length-slider" min="6" max="64" value="16">
-      </div>
-      <div class="checkbox-row">
-        <label><input type="checkbox" id="gen-upper" checked> Uppercase</label>
-        <label><input type="checkbox" id="gen-lower" checked> Lowercase</label>
-        <label><input type="checkbox" id="gen-nums" checked> Numbers</label>
-        <label><input type="checkbox" id="gen-syms" checked> Symbols</label>
-      </div>
-      <button type="button" id="generate-btn">Generate Password</button>
-    </section>
-    <section class="card list-card">
-      <div class="filter-tabs">
-          <button type="button" class="filter-pill active" data-filter="all">All</button>
-          <button type="button" class="filter-pill" data-filter="strong">Strong</button>
-          <button type="button" class="filter-pill" data-filter="weak">Needs Review</button>
+
+        <div class="stat-divider"></div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrapper stat-weak-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </div>
+          <div class="stat-text-group">
+            <span class="stat-label">Weak</span>
+            <span id="stat-weak" class="stat-value text-weak">0</span>
+          </div>
         </div>
-        <h2>Saved Credentials</h2>
-      <div class="search-bar">
-        <input type="text" id="search-input" placeholder="Search logins...">
-      </div>
-      <div id="credential-list" class="credential-list"></div>
-    </section>
-  </main>
+      </section>
+
+      <!-- Bento Item 2: Add / Edit Credential Form -->
+      <section class="bento-card bento-form-card" aria-labelledby="form-heading">
+        <div class="card-header">
+          <div class="header-with-badge">
+            <h2 id="form-heading" class="card-title">Add a credential</h2>
+            <span id="edit-badge" class="badge-mode" style="display: none;">Editing</span>
+          </div>
+          <span class="keyboard-hint"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> to save</span>
+        </div>
+
+        <form id="credential-form" novalidate>
+          <!-- Website Input with Dynamic Favicon Preview -->
+          <div class="form-group">
+            <label for="website-input" class="form-label">Website</label>
+            <div class="input-with-logo-preview">
+              <div class="logo-preview-box" id="form-logo-preview" aria-hidden="true">
+                <img id="form-logo-img" class="website-logo" src="" alt="" style="display: none;">
+                <span id="form-logo-fallback" class="logo-fallback-text">W</span>
+              </div>
+              <input
+                type="text"
+                id="website-input"
+                class="form-input has-logo-preview"
+                placeholder="e.g. github.com"
+                autocomplete="off"
+                required
+              >
+            </div>
+            <div id="website-error" class="field-error" aria-live="polite"></div>
+          </div>
+
+          <!-- Username Input -->
+          <div class="form-group">
+            <label for="username-input" class="form-label">Username</label>
+            <input
+              type="text"
+              id="username-input"
+              class="form-input"
+              placeholder="e.g. user@example.com"
+              autocomplete="off"
+              required
+            >
+            <div id="username-error" class="field-error" aria-live="polite"></div>
+          </div>
+
+          <!-- Password Input with Actions -->
+          <div class="form-group">
+            <label for="password-input" class="form-label">Password</label>
+            <div class="input-with-actions">
+              <div class="password-input-wrapper">
+                <input
+                  type="password"
+                  id="password-input"
+                  class="form-input password-field"
+                  placeholder="Enter or generate password"
+                  autocomplete="off"
+                  required
+                >
+                <button
+                  type="button"
+                  id="toggle-form-password"
+                  class="btn btn-icon-inside"
+                  aria-pressed="false"
+                  title="Toggle visibility"
+                >Show</button>
+              </div>
+              <button
+                type="button"
+                id="generate-button"
+                class="btn btn-secondary btn-compact"
+              >Generate</button>
+            </div>
+            <div id="password-error" class="field-error" aria-live="polite"></div>
+
+            <!-- Strength Bar -->
+            <div class="strength-container" aria-live="polite">
+              <div class="strength-header">
+                <span class="strength-title">Password strength:</span>
+                <span id="strength-label" class="strength-label strength-none">None</span>
+              </div>
+              <div
+                class="strength-bar-track"
+                role="progressbar"
+                aria-label="Password strength"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow="0"
+                id="strength-progressbar"
+              >
+                <div class="strength-bar-fill" id="strength-bar-fill"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- General Form Error Area -->
+          <div id="form-error" class="field-error" aria-live="polite"></div>
+
+          <!-- Form Action Buttons -->
+          <div class="form-actions">
+            <button type="submit" id="save-button" class="btn btn-primary">Save to Vault</button>
+            <button type="button" id="cancel-button" class="btn btn-secondary" style="display: none;">Cancel</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Bento Item 3: Password Generator -->
+      <section class="bento-card bento-generator-card" aria-labelledby="gen-heading">
+        <div class="card-header">
+          <h2 id="gen-heading" class="card-title">Password Generator</h2>
+        </div>
+
+        <!-- Password Preview Box -->
+        <div class="gen-preview-box">
+          <div class="gen-password-display" id="gen-preview-text">Generating...</div>
+          <div class="gen-preview-actions">
+            <button type="button" id="copy-gen-btn" class="btn btn-secondary btn-compact" title="Copy password">Copy</button>
+            <button type="button" id="fill-form-btn" class="btn btn-secondary btn-compact" title="Use in form">Use</button>
+          </div>
+        </div>
+
+        <fieldset class="generator-options">
+          <legend class="options-legend">Generator Options</legend>
+
+          <!-- Length Slider -->
+          <div class="slider-group">
+            <div class="slider-header">
+              <label for="length-slider" class="slider-label">Length</label>
+              <div class="slider-presets">
+                <button type="button" class="preset-btn" data-len="12">12</button>
+                <button type="button" class="preset-btn active" data-len="16">16</button>
+                <button type="button" class="preset-btn" data-len="20">20</button>
+                <button type="button" class="preset-btn" data-len="24">24</button>
+                <span id="length-display" class="slider-value-badge">16</span>
+              </div>
+            </div>
+            <input
+              type="range"
+              id="length-slider"
+              class="length-slider"
+              min="8"
+              max="32"
+              value="16"
+            >
+          </div>
+
+          <!-- Character Type Chips -->
+          <div class="checkboxes-grid">
+            <label class="chip-checkbox">
+              <input type="checkbox" id="opt-uppercase" checked>
+              <span class="chip-text">Uppercase (A-Z)</span>
+            </label>
+            <label class="chip-checkbox">
+              <input type="checkbox" id="opt-lowercase" checked>
+              <span class="chip-text">Lowercase (a-z)</span>
+            </label>
+            <label class="chip-checkbox">
+              <input type="checkbox" id="opt-numbers" checked>
+              <span class="chip-text">Numbers (0-9)</span>
+            </label>
+            <label class="chip-checkbox">
+              <input type="checkbox" id="opt-symbols" checked>
+              <span class="chip-text">Symbols (!@#$)</span>
+            </label>
+          </div>
+
+          <div id="generator-error" class="field-error" aria-live="polite"></div>
+
+          <button type="button" id="gen-refresh-btn" class="btn btn-secondary btn-full">
+            Generate Password
+          </button>
+        </fieldset>
+      </section>
+
+      <!-- Bento Item 4: Saved Vault Explorer (Full Width) -->
+      <section class="bento-card bento-vault-card" aria-labelledby="saved-heading">
+        <div class="vault-top-bar">
+          <div class="vault-title-group">
+            <h2 id="saved-heading" class="card-title">Saved Credentials</h2>
+            <span id="entry-count" class="entry-count">0 saved</span>
+          </div>
+
+          <div class="vault-controls-row">
+            <!-- Filter Pills -->
+            <div class="vault-filter-pills" role="tablist" aria-label="Filter credentials">
+              <button type="button" class="filter-pill active" data-filter="all">All</button>
+              <button type="button" class="filter-pill" data-filter="strong">Strong</button>
+              <button type="button" class="filter-pill" data-filter="weak">Needs Review</button>
+            </div>
+
+            <!-- Instant Search Input -->
+            <div class="search-wrapper">
+              <label for="search-input" class="visually-hidden">Search credentials</label>
+              <input
+                type="search"
+                id="search-input"
+                class="form-input search-input"
+                placeholder="Search website or username... (Press /)"
+                autocomplete="off"
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Credentials List Container -->
+        <div id="credentials-list" class="credentials-list" role="region" aria-label="Credentials list">
+          <!-- Rendered dynamically via JavaScript -->
+        </div>
+      </section>
+    </main>
+
+    <!-- Simple, Clean Footer -->
+    <footer class="bento-footer">
+      <p>Demo project. Data is stored in this browser.</p>
+    </footer>
   </div>
+
+  <script src="script.js"></script>
 </body>
 </html>

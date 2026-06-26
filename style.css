@@ -1,30 +1,1318 @@
-* { box-sizing: border-box; }
+/*
+  Password Manager Stylesheet
+  Clean Black & White Bento Design
+*/
+
+:root, [data-theme="dark"], [data-theme="light"] {
+  --bg-base: #000000;
+  --bg-surface: #0a0a0a;
+  --bg-surface-elevated: #121212;
+  --bg-surface-hover: #1a1a1a;
+  --bg-input: #000000;
+  --border-subtle: rgba(255, 255, 255, 0.1);
+  --border-default: rgba(255, 255, 255, 0.18);
+  --border-focus: #ffffff;
+  --text-main: #ffffff;
+  --text-muted: #a1a1aa;
+  --text-faint: #71717a;
+  --accent: #ffffff;
+  --accent-hover: #e4e4e7;
+  --accent-gradient: linear-gradient(135deg, #ffffff 0%, #a1a1aa 100%);
+  --accent-subtle: rgba(255, 255, 255, 0.12);
+  --success: #10b981;
+  --success-subtle: rgba(16, 185, 129, 0.16);
+  --warning: #f59e0b;
+  --warning-subtle: rgba(245, 158, 11, 0.16);
+  --danger: #ef4444;
+  --danger-subtle: rgba(239, 68, 68, 0.16);
+  --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  --row-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  --kbd-bg: rgba(255, 255, 255, 0.12);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  padding: 24px 16px;
-  background-color: #000;
-  color: #fff;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-}
-.app-container {
-  max-width: 900px;
-  margin: 0 auto;
+  padding: 32px 16px;
+  background-color: var(--bg-base);
+  color: var(--text-main);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
-.bento-layout {
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+/* Toast Notification System */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  background-color: var(--bg-surface-elevated);
+  color: var(--text-main);
+  border: 1px solid var(--border-default);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
+  animation: toastSlideIn 250ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.toast.toast-fadeout {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.toast-icon {
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Bento Wrapper */
+.bento-wrapper {
+  max-width: 1060px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Header */
+.bento-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 4px;
+}
+
+.brand-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+}
+
+.brand-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.app-title {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+
+
+.vault-status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: var(--bg-surface-elevated);
+  padding: 2px 8px;
+  border-radius: 9999px;
+  border: 1px solid var(--border-subtle);
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--success);
+  box-shadow: 0 0 6px var(--success);
+}
+
+.subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 3px 0 0 0;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Bento Grid */
+.bento-grid {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  gap: 16px;
-}
-.bento-card {
-  background: #0a0a0a;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 20px;
+  gap: 20px;
 }
 
-@media (max-width: 768px) {
-  .bento-layout {
+/* Bento Cards */
+.bento-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: var(--card-shadow);
+  display: flex;
+  flex-direction: column;
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+  position: relative;
+}
+
+.bento-card:hover {
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header-with-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card-header-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-main);
+  flex-shrink: 0;
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+}
+
+.badge-tag {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 3px 7px;
+  border-radius: 6px;
+  background: var(--bg-surface-elevated);
+  color: var(--text-main);
+  border: 1px solid var(--border-subtle);
+}
+
+.badge-mode {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #000000;
+}
+
+.keyboard-hint {
+  font-size: 11px;
+  color: var(--text-faint);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+kbd {
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  background: var(--kbd-bg);
+  border: 1px solid var(--border-default);
+  padding: 2px 5px;
+  border-radius: 4px;
+  color: var(--text-main);
+}
+
+/* Bento Item 1: Stats Banner */
+.bento-stats {
+  grid-column: span 12;
+  padding: 16px 20px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-surface);
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.stat-icon-wrapper {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.stat-total-icon {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.stat-strong-icon {
+  background: var(--success-subtle);
+  color: var(--success);
+}
+
+.stat-medium-icon {
+  background: var(--warning-subtle);
+  color: var(--warning);
+}
+
+.stat-weak-icon {
+  background: var(--danger-subtle);
+  color: var(--danger);
+}
+
+.stat-text-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.stat-value {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+}
+
+.stat-divider {
+  width: 1px;
+  height: 32px;
+  background-color: var(--border-subtle);
+}
+
+.text-strong {
+  color: var(--success) !important;
+}
+
+.text-medium {
+  color: var(--warning) !important;
+}
+
+.text-weak {
+  color: var(--danger) !important;
+}
+
+/* Bento Item 2: Add / Edit Form Card */
+.bento-form-card {
+  grid-column: span 7;
+}
+
+/* Bento Item 3: Password Generator Card */
+.bento-generator-card {
+  grid-column: span 5;
+}
+
+/* Bento Item 4: Saved Vault Card */
+.bento-vault-card {
+  grid-column: span 12;
+}
+
+/* Form Styles */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.form-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.field-hint {
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
+.form-input {
+  width: 100%;
+  height: 42px;
+  padding: 0 14px;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--text-main);
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.form-input:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25);
+}
+
+/* Website Input with Live Logo Preview */
+.input-with-logo-preview {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.logo-preview-box {
+  position: absolute;
+  left: 9px;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.logo-preview-box img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.logo-fallback-text {
+  font-size: 13px;
+}
+
+.form-input.has-logo-preview {
+  padding-left: 46px;
+}
+
+/* Username input with icon prefix */
+.input-with-prefix {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-prefix-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--text-faint);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+.form-input.has-prefix {
+  padding-left: 38px;
+}
+
+/* Password Input With Actions */
+.password-field {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: 0.05em;
+}
+
+.input-with-actions {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.password-input-wrapper {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-wrapper .form-input {
+  padding-right: 56px;
+}
+
+.btn-icon-inside {
+  position: absolute;
+  right: 8px;
+  height: 28px;
+  padding: 0 8px;
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 150ms ease, border-color 150ms ease;
+}
+
+.btn-icon-inside:hover {
+  color: var(--text-main);
+  border-color: var(--border-default);
+}
+
+/* Field Errors */
+.field-error {
+  font-size: 12px;
+  color: var(--danger);
+  min-height: 18px;
+  line-height: 1.4;
+  margin-top: 2px;
+}
+
+/* Strength Indicator */
+.strength-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.strength-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.strength-title {
+  color: var(--text-faint);
+}
+
+.strength-label {
+  font-weight: 600;
+  transition: color 150ms ease;
+}
+
+.strength-none {
+  color: var(--text-faint);
+}
+
+.strength-weak {
+  color: var(--danger);
+}
+
+.strength-medium {
+  color: var(--warning);
+}
+
+.strength-strong {
+  color: var(--success);
+}
+
+.strength-bar-track {
+  width: 100%;
+  height: 5px;
+  background-color: var(--bg-surface-elevated);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.strength-bar-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 9999px;
+  transition: width 200ms ease, background-color 200ms ease;
+  background-color: var(--text-faint);
+}
+
+/* Form Actions */
+.form-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 20px;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 42px;
+  min-height: 36px;
+  padding: 0 18px;
+  font-size: 13.5px;
+  font-weight: 600;
+  font-family: inherit;
+  border-radius: 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 100ms ease, box-shadow 150ms ease;
+  text-decoration: none;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.btn-compact {
+  height: 38px;
+  min-height: 34px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.btn-icon {
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border-radius: 10px;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-default);
+  color: var(--text-main);
+}
+
+.btn-icon:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--border-focus);
+}
+
+.btn-primary {
+  background: #ffffff;
+  color: #000000;
+  border: 1px solid #ffffff;
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
+}
+
+.btn-primary:hover {
+  background: #e4e4e7;
+  border-color: #e4e4e7;
+  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.3);
+}
+
+.btn-secondary {
+  background-color: var(--bg-surface-elevated);
+  color: var(--text-main);
+  border: 1px solid var(--border-default);
+}
+
+.btn-secondary:hover {
+  background-color: var(--bg-surface-hover);
+  border-color: #ffffff;
+}
+
+.btn-full {
+  width: 100%;
+  margin-top: 14px;
+}
+
+/* Generator Bento Card Components */
+.gen-preview-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-default);
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.gen-password-display {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+  word-break: break-all;
+  letter-spacing: 0.05em;
+  user-select: all;
+}
+
+.gen-preview-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.generator-options {
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin: 0;
+  background: var(--bg-surface-elevated);
+}
+
+.options-legend {
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 0 6px;
+  color: var(--text-muted);
+}
+
+.slider-group {
+  margin-bottom: 14px;
+}
+
+.slider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.slider-label {
+  font-size: 13px;
+  color: var(--text-main);
+}
+
+.slider-presets {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.preset-btn {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 120ms ease;
+}
+
+.preset-btn:hover {
+  color: #ffffff;
+  border-color: #ffffff;
+}
+
+.preset-btn.active {
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  border-color: #ffffff;
+}
+
+.slider-value-badge {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 5px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-default);
+  color: #ffffff;
+  margin-left: 2px;
+}
+
+/* Range Slider */
+.length-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  background: var(--border-default);
+  border-radius: 9999px;
+  outline: none;
+  margin: 6px 0;
+  cursor: pointer;
+}
+
+.length-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  border: 2px solid #000000;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.length-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  border: 2px solid #000000;
+}
+
+/* Checkbox Chips */
+.checkboxes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.chip-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  transition: border-color 150ms ease, background-color 150ms ease, color 150ms ease;
+  user-select: none;
+}
+
+.chip-checkbox:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  color: var(--text-main);
+}
+
+.chip-checkbox input[type="checkbox"] {
+  accent-color: #ffffff;
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+
+/* Saved Credentials Vault Section */
+.vault-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.vault-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.entry-count {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 2px 8px;
+  border-radius: 9999px;
+}
+
+.vault-controls-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.vault-filter-pills {
+  display: flex;
+  align-items: center;
+  background: var(--bg-surface-elevated);
+  padding: 3px;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+}
+
+.filter-pill {
+  background: none;
+  border: none;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 120ms ease;
+}
+
+.filter-pill:hover {
+  color: var(--text-main);
+}
+
+.filter-pill.active {
+  background: #ffffff;
+  color: #000000;
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.search-wrapper {
+  position: relative;
+  min-width: 250px;
+  max-width: 320px;
+}
+
+.search-icon-box {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-faint);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+
+.search-input {
+  padding-left: 36px;
+  height: 38px;
+}
+
+/* Credentials List */
+.credentials-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Entry Row Item (Bento Style) */
+.entry-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  box-shadow: var(--row-shadow);
+  transition: border-color 150ms ease, background-color 150ms ease, transform 120ms ease;
+}
+
+.entry-row:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  background-color: var(--bg-surface-hover);
+}
+
+.entry-main-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  flex: 1;
+}
+
+/* Website Logo Container */
+.entry-logo-box {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background-color: #000000;
+  border: 1px solid var(--border-default);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.entry-logo-img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.entry-logo-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #000000;
+  background: #ffffff;
+  text-transform: uppercase;
+}
+
+.entry-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.entry-website-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.entry-website {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #ffffff;
+  word-break: break-all;
+}
+
+.entry-strength-badge {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+}
+
+.entry-strength-badge.badge-strong {
+  background: var(--success-subtle);
+  color: var(--success);
+}
+
+.entry-strength-badge.badge-medium {
+  background: var(--warning-subtle);
+  color: var(--warning);
+}
+
+.entry-strength-badge.badge-weak {
+  background: var(--danger-subtle);
+  color: var(--danger);
+}
+
+.entry-username-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-muted);
+  word-break: break-all;
+}
+
+.btn-copy-user {
+  background: none;
+  border: none;
+  padding: 2px 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--text-faint);
+  display: inline-flex;
+  align-items: center;
+  transition: all 120ms ease;
+}
+
+.btn-copy-user:hover {
+  color: #ffffff;
+  background: var(--bg-surface);
+}
+
+.entry-password-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 1px;
+}
+
+.entry-password {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+  color: #ffffff;
+  letter-spacing: 0.08em;
+  word-break: break-all;
+}
+
+/* Actions Toolbar */
+.entry-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.entry-actions .btn {
+  height: 34px;
+  min-height: 32px;
+  padding: 0 11px;
+  font-size: 12px;
+  border-radius: 8px;
+}
+
+.action-delete {
+  color: var(--danger);
+}
+
+.action-delete:hover {
+  border-color: var(--danger);
+  background-color: var(--danger-subtle);
+}
+
+/* Empty State */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 44px 24px;
+  text-align: center;
+  background-color: var(--bg-surface-elevated);
+  border: 1px dashed var(--border-default);
+  border-radius: 14px;
+  color: var(--text-muted);
+  gap: 8px;
+}
+
+.empty-state-icon {
+  width: 44px;
+  height: 44px;
+  margin-bottom: 4px;
+  color: var(--text-faint);
+}
+
+.empty-state-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.empty-state-desc {
+  font-size: 13px;
+  color: var(--text-faint);
+  margin: 0;
+}
+
+/* Footer */
+.bento-footer {
+  text-align: center;
+  padding: 16px 0 8px 0;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 12px;
+  color: var(--text-faint);
+}
+
+.bento-footer p {
+  margin: 0;
+}
+
+/* ==========================================================================
+   Login / Authentication Screen Styles (Compact & Minimal)
+   ========================================================================== */
+.login-wrapper {
+  min-height: 75vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 360px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: 14px;
+  padding: 24px 22px;
+  box-shadow: var(--card-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: relative;
+}
+
+.login-header {
+  text-align: center;
+}
+
+.login-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 4px 0;
+}
+
+.login-subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Basic Understated Demo Autofill Line */
+.demo-login-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.demo-bar-text {
+  color: var(--text-muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11.5px;
+}
+
+.autofill-link-btn {
+  background: none;
+  border: none;
+  padding: 2px 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffffff;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  border-radius: 4px;
+}
+
+.autofill-link-btn:hover {
+  color: var(--text-muted);
+}
+
+/* Responsive Media Queries */
+@media (max-width: 920px) {
+  .bento-form-card {
+    grid-column: span 12;
+  }
+  .bento-generator-card {
+    grid-column: span 12;
+  }
+  .vault-controls-row {
+    justify-content: flex-start;
+    width: 100%;
+  }
+  .search-wrapper {
+    min-width: 100%;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 680px) {
+  body {
+    padding: 16px 12px;
+  }
+  .bento-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .header-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  .btn-text-desktop {
+    display: none;
+  }
+  .bento-card {
+    padding: 18px 16px;
+  }
+  .bento-stats {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .stat-card {
+    flex: 1 1 42%;
+  }
+  .stat-divider {
+    display: none;
+  }
+  .entry-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .entry-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .checkboxes-grid {
     grid-template-columns: 1fr;
   }
 }
